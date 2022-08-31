@@ -1,0 +1,23 @@
+services:
+  web: 
+    build: ./docker
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www/html/befa
+  db:
+    image: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=db
+      - MYSQL_USER=db
+      - MYSQL_PASSWORD=tiger
+    volumes:
+      - ./storage:/var/lib/mysql
+    ports:
+      - "3306:3306"
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - "8001:80"
+
