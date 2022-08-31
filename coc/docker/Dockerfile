@@ -1,6 +1,6 @@
 
 FROM php:7.4-apache-buster
-ENV APACHE_DOCUMENT_ROOT /var/www/html/befa/public
+ENV APACHE_DOCUMENT_ROOT /var/www/html/coc/public
 RUN mkdir befa
 RUN apt-get clean
 RUN apt-get  update  && \

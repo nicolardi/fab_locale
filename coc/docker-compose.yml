@@ -4,7 +4,7 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - ./:/var/www/html/befa
+      - ./:/var/www/html/coc
   db:
     image: mariadb
     environment:
