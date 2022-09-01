@@ -5,6 +5,7 @@ services:
       - "8000:80"
     volumes:
       - ./:/var/www/html/coc
+    command: bash -c "service memcached start && apache2-foreground"
   db:
     image: mariadb
     environment:
