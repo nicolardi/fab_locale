@@ -3,12 +3,11 @@ FROM php:7.4-apache-buster
 ENV APACHE_DOCUMENT_ROOT /var/www/html/befa/public
 RUN mkdir befa
 RUN apt-get clean
-RUN apt-get  update  && \
-    apt-get install -y libxml2-dev
-RUN docker-php-ext-install soap mysqli 
+RUN apt-get  update  && apt-get install -y libxml2-dev 
+RUN docker-php-ext-install soap mysqli pdo_mysql
+RUN pecl install xdebug  
 RUN apt install -y git
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug
+
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php -r "if (hash_file('sha384', 'composer-setup.php') === '55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
 RUN php composer-setup.php

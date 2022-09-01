@@ -1,10 +1,10 @@
 
 FROM php:7.4-apache-buster
 ENV APACHE_DOCUMENT_ROOT /var/www/html/coc/public
-RUN mkdir befa
+RUN mkdir coc
 RUN apt-get clean
 RUN apt-get  update  && apt-get install -y libxml2-dev 
-RUN docker-php-ext-install soap mysqli pdo_mysql xdebug
+RUN docker-php-ext-install soap mysqli pdo_mysql
 RUN pecl install xdebug  
 RUN apt install -y git
 
