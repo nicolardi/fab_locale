@@ -1,6 +1,7 @@
 
 FROM php:7.4-apache-buster
 ENV APACHE_DOCUMENT_ROOT /var/www/html/coc/public
+RUN ln -s /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/rewrite.load 
 RUN mkdir coc
 RUN apt-get clean
 RUN apt-get  update  && apt-get install -y libxml2-dev 
