@@ -4,9 +4,13 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/coc/public
 RUN ln -s /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/rewrite.load 
 RUN mkdir coc
 RUN apt-get clean
-RUN apt-get  update  && apt-get install -y libxml2-dev 
-RUN docker-php-ext-install soap mysqli pdo_mysql
-RUN pecl install xdebug  
+RUN apt-get  update  && apt-get install -y libxml2-dev
+RUN apt-get install -y libz-dev libmemcached-dev && \
+apt-get install -y memcached libmemcached-tools && \
+pecl install memcached && \
+docker-php-ext-enable memcached 
+RUN docker-php-ext-install soap mysqli pdo_mysql 
+RUN pecl install xdebug 
 RUN apt install -y git
 
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
