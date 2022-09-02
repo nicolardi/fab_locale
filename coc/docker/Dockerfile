@@ -9,10 +9,10 @@ RUN apt-get install -y libz-dev libmemcached-dev && \
 apt-get install -y memcached libmemcached-tools && \
 pecl install memcached && \
 docker-php-ext-enable memcached 
-RUN docker-php-ext-install soap mysqli pdo_mysql 
+RUN docker-php-ext-install soap mysqli pdo_mysql bcmath
 RUN pecl install xdebug 
+RUN docker-php-ext-enable xdebug
 RUN apt install -y git 
-
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php -r "if (hash_file('sha384', 'composer-setup.php') === '55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
 RUN php composer-setup.php
@@ -36,5 +36,6 @@ RUN chmod 777 /run/memcached
 RUN echo "xdebug.mode = debug,develop"  >> "$PHP_INI_DIR/php.ini"
 RUN echo "xdebug.start_with_request = On"  >> "$PHP_INI_DIR/php.ini"
 RUN apt install -y git 
+RUN echo "memcached.serializer=php" >> "$PHP_INI_DIR/conf.d/docker-php-ext-memcached.ini"
 LABEL NAME="WEBSERVER"
 LABEL VERSION="1.0.0"
