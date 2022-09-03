@@ -1,0 +1,14 @@
+[Unit]
+Description=Email confirmation daemon
+Requires=php7.4-fpm.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+WorkingDirectory=/var/www/html/coc
+User=www-data
+ExecStart=php sendEmails.php
+
+[Install]
+WantedBy=multi-user.target

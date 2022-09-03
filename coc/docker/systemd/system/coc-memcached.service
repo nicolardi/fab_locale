@@ -1,0 +1,12 @@
+[Unit]
+Description=Memcached daemon
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+WorkingDirectory=/var/www/html/coc
+ExecStart=bash start_memcached.sh
+
+[Install]
+WantedBy=multi-user.target

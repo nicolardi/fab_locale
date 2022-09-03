@@ -1,0 +1,13 @@
+[Unit]
+Description=Websocket for pusher
+Requires=coc-memcached.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+WorkingDirectory=/var/www/html/coc
+ExecStart=bash start_pusher.sh
+
+[Install]
+WantedBy=multi-user.target

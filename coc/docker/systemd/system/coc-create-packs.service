@@ -1,0 +1,14 @@
+[Unit]
+Description=Pack creations service
+Requires=mariadb.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+WorkingDirectory=/var/www/html/coc
+User=www-data
+ExecStart=php createPacks.php
+
+[Install]
+WantedBy=multi-user.target

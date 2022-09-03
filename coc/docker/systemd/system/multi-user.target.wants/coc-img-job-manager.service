@@ -1,0 +1,14 @@
+[Unit]
+Description=Images insertion service 
+Requires=coc-memcached.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+WorkingDirectory=/var/www/html/coc/scripts/imgJobManager
+User=www-data
+ExecStart=bash start_job_manager.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,13 @@
+[Unit]
+Description=Websocket for market
+Requires=coc-memcached.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+WorkingDirectory=/var/www/html/coc
+ExecStart=bash start_market.sh
+
+[Install]
+WantedBy=multi-user.target

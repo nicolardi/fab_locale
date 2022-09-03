@@ -1,0 +1,14 @@
+[Unit]
+Description=Datafeed for BTC and ETH from Bitmex and Binance
+Requires=coc-ws-push.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+WorkingDirectory=/var/www/html/coc
+User=www-data
+ExecStart=php datafeed.php
+
+[Install]
+WantedBy=multi-user.target

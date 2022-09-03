@@ -1,0 +1,14 @@
+[Unit]
+Description=SportMonks matches backend handler
+Requires=mariadb.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+WorkingDirectory=/var/www/html/coc
+User=www-data
+ExecStart=php getMatches.php
+
+[Install]
+WantedBy=multi-user.target
