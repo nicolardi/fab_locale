@@ -4,7 +4,7 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/coc/public
 RUN ln -s /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/rewrite.load 
 RUN mkdir coc
 RUN apt-get clean
-RUN apt-get  update  && apt-get install -y libxml2-dev
+RUN apt-get  update  && apt-get install -y libxml2-dev sudo nano
 RUN apt-get install -y libz-dev libmemcached-dev && \
 apt-get install -y memcached libmemcached-tools && \
 pecl install memcached && \
@@ -24,9 +24,7 @@ RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 RUN sed -i 's!memory_limit\ =\ 128M!memory_limit\ =\ 3G!g' "$PHP_INI_DIR/php.ini"
 RUN sed -i 's!upload_max_filesize\ =\ 2M!upload_max_filesize\ =\ 2G!g' "$PHP_INI_DIR/php.ini"
 RUN sed -i 's!post_max_size\ =\ 8M!post_max_size = 3G!g' "$PHP_INI_DIR/php.ini"
-
 RUN sed -i 's!error_reporting\ =\ E_ALL!error_reporting = E_ALL \& ~E_NOTICE \& ~E_STRICT \& ~E_DEPRECATED \& ~E_WARNING!' "$PHP_INI_DIR/php.ini"
-
 RUN mkdir /run/memcached
 RUN echo "-s /run/memcached/coc-memcached.sock" >> "/etc/memcached.conf"
 RUN sed -i 's!\-p 11211!# \-p 11211!g' "/etc/memcached.conf"
@@ -37,5 +35,33 @@ RUN echo "xdebug.mode = debug,develop"  >> "$PHP_INI_DIR/php.ini"
 RUN echo "xdebug.start_with_request = On"  >> "$PHP_INI_DIR/php.ini"
 RUN apt install -y git 
 RUN echo "memcached.serializer=php" >> "$PHP_INI_DIR/conf.d/docker-php-ext-memcached.ini"
+RUN sed -i "s!AddHandler type-map var!#AddHandler type-map var!g" /etc/apache2/mods-available/mime.conf
+RUN apt-get update \
+ && apt-get install build-essential libtool autoconf uuid-dev pkg-config git libsodium-dev wget bzip2 \
+
+ && wget https://archive.org/download/zeromq_4.1.4/zeromq-4.1.4.tar.gz \
+ && tar -xvzf zeromq-4.1.4.tar.gz \
+ && cd zeromq-4.1.4 \
+ && ./configure \
+ && make \
+ &&  make install \
+ &&  ldconfig \
+ && cd .. \
+ && rm -fr zeromq-4.1.4.tar.gz zeromq-4.1.4/ \
+
+ && git clone https://github.com/mkoppanen/php-zmq.git \
+ && cd php-zmq \
+ && phpize && ./configure \
+ && make \
+ && make install \
+ && cd .. \
+ && rm -fr php-zmq \
+
+ && echo "extension=zmq.so" > /usr/local/etc/php/conf.d/docker-php-ext-zmq.ini 
+
+COPY docker-php-ext-xdebug.ini "$PHP_INI_DIR/conf.d"
+COPY systemd/system /etc/systemd/system
+COPY run.sh /run.sh
 LABEL NAME="WEBSERVER"
 LABEL VERSION="1.0.0"
+CMD bash -c "bash /run.sh && apache2-foreground"
