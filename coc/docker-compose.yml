@@ -3,8 +3,10 @@ services:
     build: ./docker
     ports:
       - "8000:80"
+      - "8443:443"
     volumes:
       - ./:/var/www/html/coc
+    
     #command: bash -c "service memcached start && apache2-foreground"
   db:
     image: mariadb
