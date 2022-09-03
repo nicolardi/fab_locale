@@ -4,12 +4,23 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/coc/public
 RUN ln -s /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/rewrite.load 
 RUN mkdir coc
 RUN apt-get clean
-RUN apt-get  update  && apt-get install -y libxml2-dev sudo nano
+RUN apt-get  update  && apt-get install -y libxml2-dev sudo nano zlib1g-dev libpng-dev
 RUN apt-get install -y libz-dev libmemcached-dev && \
 apt-get install -y memcached libmemcached-tools && \
 pecl install memcached && \
 docker-php-ext-enable memcached 
-RUN docker-php-ext-install soap mysqli pdo_mysql bcmath
+RUN docker-php-ext-install soap mysqli pdo_mysql bcmath 
+RUN apt-get install -y libgd3 libgd-dev 
+RUN apt-get install -y -qq git \
+        libjpeg62-turbo-dev \
+        apt-transport-https \
+        libfreetype6-dev \
+        libmcrypt-dev \
+        libpng-dev \
+        libssl-dev \
+        zip unzip
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg 
+RUN docker-php-ext-install -j$(nproc) gd
 RUN pecl install xdebug 
 RUN docker-php-ext-enable xdebug
 RUN apt install -y git 
@@ -37,7 +48,7 @@ RUN apt install -y git
 RUN echo "memcached.serializer=php" >> "$PHP_INI_DIR/conf.d/docker-php-ext-memcached.ini"
 RUN sed -i "s!AddHandler type-map var!#AddHandler type-map var!g" /etc/apache2/mods-available/mime.conf
 RUN apt-get update \
- && apt-get install build-essential libtool autoconf uuid-dev pkg-config git libsodium-dev wget bzip2 \
+ && apt-get install -y build-essential libtool autoconf uuid-dev pkg-config git libsodium-dev wget bzip2 \
 
  && wget https://archive.org/download/zeromq_4.1.4/zeromq-4.1.4.tar.gz \
  && tar -xvzf zeromq-4.1.4.tar.gz \
@@ -58,10 +69,13 @@ RUN apt-get update \
  && rm -fr php-zmq \
 
  && echo "extension=zmq.so" > /usr/local/etc/php/conf.d/docker-php-ext-zmq.ini 
-
+RUN a2enmod ssl
+COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY docker-php-ext-xdebug.ini "$PHP_INI_DIR/conf.d"
+COPY ssl/* /etc/ssl
 COPY systemd/system /etc/systemd/system
 COPY run.sh /run.sh
 LABEL NAME="WEBSERVER"
 LABEL VERSION="1.0.0"
+EXPOSE 80 443
 CMD bash -c "bash /run.sh && apache2-foreground"
