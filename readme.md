@@ -45,6 +45,27 @@ L'indirizzo del server (per collegarsi da PHP) è:
     host: db
     
 
+# Xdebug
+
+Xdebug è attivo e si collega alla porta 9003 dell'host
+
+Per xdebug si può usare questa configurazione:
+
+        {
+            "name": "Listen for Xdebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9003,
+            "stopOnEntry": false,
+            "pathMappings": {
+                "/var/www/html": "${workspaceFolder}"
+            }
+        },
+
+è molto inportante la pathMapping altrimenti i breakpoint creati non funzioneranno perchè xdebug non rintraccerà il file corretto.
+Per fare un debug di eventuali problemi si consiglia di mettere a true "stopOnEntry"
+
+
 
 
 
